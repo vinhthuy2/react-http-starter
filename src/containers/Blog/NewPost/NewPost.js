@@ -1,22 +1,25 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import './NewPost.css';
-import Axios from 'axios';
+import "./NewPost.css";
+import Axios from "axios";
 
 class NewPost extends Component {
   state = {
-    title: '',
-    content: '',
-    author: 'Max'
+    title: "",
+    content: "",
+    author: "Max"
   };
 
+  componentDidMount() {
+    console.log(this.props);
+  }
   postDateHandler = () => {
     const post = {
       title: this.state.title,
       body: this.state.content,
       author: this.state.author
     };
-    Axios.post('/posts', post).then(res => {
+    Axios.post("/posts", post).then(res => {
       console.log(res);
     });
   };
