@@ -1,35 +1,55 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import './FullPost.css';
+import React, { Component } from "react";
+import axios from "../../../axios";
+import "./FullPost.css";
 
 class FullPost extends Component {
   state = {
-    loadedPost: null
+    loadedPost: null,
+    loading: true
   };
 
   deletePostHandler = () => {
-    axios.delete('/posts/' + this.props.id).then(res => {
+    axios.delete("/posts/" + this.props.match.params.id).then(res => {
       console.log(res);
     });
   };
 
-  componentDidUpdate = () => {
-    if (this.props.id) {
-      if (
-        !this.state.loadedPost ||
-        (this.state.loadedPost && this.state.loadedPost.id !== this.props.id)
-      ) {
-        axios.get('/posts/' + this.props.id).then(res => {
-          this.setState({ loadedPost: res.data });
-          console.log(res.data);
-        });
-      }
+  componentDidMount = () => {
+    console.log("Fullpost didmount", this.props.match.params.id);
+    console.log(this.state.loadedPost);
+
+    if (
+      !this.state.loadedPost ||
+      (this.state.loadedPost &&
+        this.props.match.params.id !== this.props.match.params.id)
+    ) {
+      axios.get("/posts/" + this.props.match.params.id).then(res => {
+        console.log("got res");
+        this.setState({ loadedPost: res.data, loading: false });
+      });
     }
   };
+
+  componentDidUpdate = prevProps => {
+    console.log("Fullpost didupdate", this.props.match.params.id);
+    console.log(this.state.loadedPost);
+    console.log("prev props", prevProps.match.params.id);
+    if (
+      !this.state.loadedPost ||
+      (this.state.loadedPost &&
+        prevProps.match.params.id !== this.props.match.params.id)
+    ) {
+      axios.get("/posts/" + this.props.match.params.id).then(res => {
+        console.log("got res");
+        this.setState({ loadedPost: res.data });
+      });
+    }
+  };
+
   render() {
-    let post = <p style={{ textAlign: 'center' }}>Please select a Post!</p>;
-    if (this.props.id) {
-      post = <p style={{ textAlign: 'center' }}>Loading...</p>;
+    let post = <p style={{ textAlign: "center" }}>Please select a Post!</p>;
+    if (this.props.match.params.id) {
+      post = <p style={{ textAlign: "center" }}>Loading...</p>;
     }
     if (this.state.loadedPost) {
       post = (
