@@ -1,71 +1,64 @@
-import React, { Component } from "react";
-import axios from "../../../axios";
-import "./FullPost.css";
+import React, { Component } from 'react';
+import axios from '../../../axios';
+import './FullPost.css';
 
 class FullPost extends Component {
-  state = {
-    loadedPost: null,
-    loading: true
-  };
+	state = {
+		loadedPost: null,
+		loading: true
+	};
 
-  deletePostHandler = () => {
-    axios.delete("/posts/" + this.props.match.params.id).then(res => {
-      console.log(res);
-    });
-  };
+	deletePostHandler = () => {
+		axios.delete('/posts/' + this.props.match.params.id).then((res) => {
+			console.log(res);
+		});
+	};
 
-  componentDidMount = () => {
-    console.log("Fullpost didmount", this.props.match.params.id);
-    console.log(this.state.loadedPost);
+	componentDidMount = () => {
+		console.log('Fullpost didmount', this.props.match.params.id);
+		console.log(this.state.loadedPost);
+		this.loadData();
+	};
 
-    if (
-      !this.state.loadedPost ||
-      (this.state.loadedPost &&
-        this.props.match.params.id !== this.props.match.params.id)
-    ) {
-      axios.get("/posts/" + this.props.match.params.id).then(res => {
-        console.log("got res");
-        this.setState({ loadedPost: res.data, loading: false });
-      });
-    }
-  };
+	componentDidUpdate = (prevProps) => {
+		console.log('Fullpost didupdate', this.props.match.params.id);
+		console.log(this.state.loadedPost);
+		console.log('prev props', prevProps.match.params.id);
+		this.loadData();
+	};
 
-  componentDidUpdate = prevProps => {
-    console.log("Fullpost didupdate", this.props.match.params.id);
-    console.log(this.state.loadedPost);
-    console.log("prev props", prevProps.match.params.id);
-    if (
-      !this.state.loadedPost ||
-      (this.state.loadedPost &&
-        prevProps.match.params.id !== this.props.match.params.id)
-    ) {
-      axios.get("/posts/" + this.props.match.params.id).then(res => {
-        console.log("got res");
-        this.setState({ loadedPost: res.data });
-      });
-    }
-  };
+	loadData() {
+		if (
+			!this.state.loadedPost ||
+			(this.state.loadedPost && this.state.loadedPost.id !== +this.props.match.params.id)
+		) {
+			axios.get('/posts/' + this.props.match.params.id).then((res) => {
+				console.log('got res');
+				this.setState({ loadedPost: res.data, loading: false });
+			});
+		}
+	}
 
-  render() {
-    let post = <p style={{ textAlign: "center" }}>Please select a Post!</p>;
-    if (this.props.match.params.id) {
-      post = <p style={{ textAlign: "center" }}>Loading...</p>;
-    }
-    if (this.state.loadedPost) {
-      post = (
-        <div className="FullPost">
-          <h1>{this.state.loadedPost.title}</h1>
-          <p>{this.state.loadedPost.body}</p>
-          <div className="Edit">
-            <button onClick={this.deletePostHandler} className="Delete">
-              Delete
-            </button>
-          </div>
-        </div>
-      );
-    }
-    return post;
-  }
+	render() {
+		let post = <p style={{ textAlign: 'center' }}>Please select a Post!</p>;
+		if (this.props.match.params.id) {
+			post = <p style={{ textAlign: 'center' }}>Loading...</p>;
+		}
+		if (this.state.loadedPost) {
+			post = (
+				<div className="FullPost">
+					<h1>{this.state.loadedPost.title}</h1>
+					<p>{this.state.loadedPost.body}</p>
+					<div className="Edit">
+						<button onClick={this.deletePostHandler} className="Delete">
+							Delete
+						</button>
+					</div>
+				</div>
+			);
+		}
+		return post;
+	}
 }
 
 export default FullPost;
