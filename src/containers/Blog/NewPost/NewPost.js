@@ -1,13 +1,14 @@
-import React, { Component } from "react";
-
-import "./NewPost.css";
-import Axios from "axios";
+import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
+import './NewPost.css';
+import Axios from '../../../axios';
 
 class NewPost extends Component {
   state = {
-    title: "",
-    content: "",
-    author: "Max"
+    title: '',
+    content: '',
+    author: 'Max',
+    submitted: false
   };
 
   componentDidMount() {
@@ -19,14 +20,17 @@ class NewPost extends Component {
       body: this.state.content,
       author: this.state.author
     };
-    Axios.post("/posts", post).then(res => {
+    Axios.post('/posts', post).then(res => {
       console.log(res);
+      // this.setState({ submitted: true });
+      this.props.history.replace('/posts');
     });
   };
 
   render() {
     return (
       <div className="NewPost">
+        {/* {this.state.submitted ? <Redirect to="/posts" /> : null} */}
         <h1>Add a Post</h1>
         <label>Title</label>
         <input
